@@ -1,0 +1,49 @@
+version: "3.9"
+
+name: saloncedevcomapp
+
+services:
+  mysqldb:
+    image: 'mysql@sha256:eb00f19a38312b85bfb7195eead2d07d35279f2a6a61b3dc994094dcefa57986'
+    container_name: mysqldb
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_USER=${MYSQL_DB_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+    networks:
+      - appsnetwork
+    volumes:
+      - saloncedevcomdata:/var/lib/mysql
+    healthcheck:
+          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+          timeout: 5s
+          retries: 30
+
+  app:
+    build:
+      context: ./backend-todolist/
+      dockerfile: dockerfile
+    image: saloncedevcombackend:0
+    container_name: app
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    ports:
+      - '${ACCESS_PORT}:8080'
+    env_file:
+    - .env
+    environment:
+      - MYSQL_DB_HOST_NAME=mysqldb
+      - MYSQL_DB_NAME=${MYSQL_DB_NAME}
+      - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DB_USERNAME=${MYSQL_DB_USERNAME}
+    networks:
+      - appsnetwork
+
+networks:
+  appsnetwork:
+
+volumes:
+  saloncedevcomdata:

@@ -17,22 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-/*
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // ...
-                .csrf((csrf) -> csrf
-                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
-                );
-        return http.build();
-    }
-}
-*/
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
