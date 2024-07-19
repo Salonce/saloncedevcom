@@ -1,0 +1,14 @@
+﻿#Build stage - npm building static files
+FROM node@sha256:9af472b2578996eb3d6affbcb82fdee6f086da2c43121e75038a4a70317f784f AS npmbuilder
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+
+#5mb alpine-slim
+FROM nginx@sha256:ce01dacf330fdcbc3c93926291ab027396e7e9680a4180318b06e86525d1aa9f
+WORKDIR /
+COPY --from=npmbuilder /app/dist /app/static
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

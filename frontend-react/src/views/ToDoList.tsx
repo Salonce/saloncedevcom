@@ -22,7 +22,7 @@ const ToDoList = () => {
   const fetchCsrfToken = async () => {
     try {
       //const response =  await fetch('/api/task', {
-        await fetch('/api/task', {
+        await fetch('/todo/task', {
         method: 'GET',
         credentials: 'include', // Include credentials (cookies) in the request
       });
@@ -40,7 +40,7 @@ const ToDoList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/task');
+      const response = await fetch('/todo/task');
       const data = await response.json();
       setTasks(data);
     } catch (error) {
@@ -50,7 +50,7 @@ const ToDoList = () => {
 
   const addTask = async () => {
     try {
-      await fetch('/api/task', {
+      await fetch('/todo/task', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const ToDoList = () => {
 
   const removeTask = async (taskId: number) => {
     try {
-      await fetch(`/api/task/${taskId}`, {
+      await fetch(`/todo/task/${taskId}`, {
         method: 'DELETE',
         headers: {
           'X-XSRF-TOKEN': csrfToken, // Include CSRF token in headers
@@ -86,7 +86,7 @@ const ToDoList = () => {
 
   const switchTaskState = async (taskId: number) => {
     try {
-      await fetch(`/api/task/${taskId}`, {
+      await fetch(`/todo/task/${taskId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

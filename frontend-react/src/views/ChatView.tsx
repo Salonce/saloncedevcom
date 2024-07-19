@@ -14,7 +14,7 @@ const ChatView: React.FC = () => {
 
   useEffect(() => {
     // Create a WebSocket connection
-    const socket = new SockJS('/app/ws');
+    const socket = new SockJS('/todo/ws');
 
     socket.addEventListener('open', () => {
       console.log('WebSocket connection established.');

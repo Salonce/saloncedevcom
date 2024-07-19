@@ -21,12 +21,12 @@ services:
           timeout: 5s
           retries: 30
 
-  app:
+  backend:
     build:
       context: ./backend-todolist/
       dockerfile: dockerfile
     image: saloncedevcombackend:0
-    container_name: app
+    container_name: saloncedevcom-backend
     depends_on:
       mysqldb:
         condition: service_healthy
@@ -41,6 +41,26 @@ services:
       - MYSQL_DB_USERNAME=${MYSQL_DB_USERNAME}
     networks:
       - appsnetwork
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/todo/task"]
+      #interval: 10s
+      timeout: 5s
+      retries: 30
+
+  frontend:
+    build:
+      context: ./frontend-react/
+      dockerfile: dockerfile
+    image: saloncedevcomfrontend:0
+    container_name: saloncedevcom-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - appsnetwork
+    ports:
+      - '3000:80'
+
 
 networks:
   appsnetwork:

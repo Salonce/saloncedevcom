@@ -11,8 +11,9 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:80", "http://localhost:3000", "http://saloncedevcom-frontend:3000"}, allowCredentials = "true")
 @RequiredArgsConstructor
+@RequestMapping("/todo")
 public class TodoController {
 
     private final TodoService todoService;
@@ -40,5 +41,4 @@ public class TodoController {
             todoService.switchTaskState(id);
         return ResponseEntity.ok("Request processed successfully");
     }
-
 }
