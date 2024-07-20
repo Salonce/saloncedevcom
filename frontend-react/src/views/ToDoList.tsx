@@ -13,11 +13,14 @@ const ToDoList = () => {
   const [newTask, setNewTask] = useState('');
   const [csrfToken, setCsrfToken] = useState<string>('');
 
-  useEffect(() => {
-    fetchCsrfToken();
-    fetchData();
-  }, []);
+  const fetchDataWithCsrf = async () => {
+    await fetchCsrfToken(); // Wait for the CSRF token to be fetched
+    await fetchData();      // Then fetch the data
+  };
 
+  useEffect(() => {
+    fetchDataWithCsrf();
+  }, []);
 
   const fetchCsrfToken = async () => {
     try {

@@ -43,7 +43,6 @@ services:
       - appsnetwork
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/todo/task"]
-      #interval: 10s
       timeout: 5s
       retries: 30
 
