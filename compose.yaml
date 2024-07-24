@@ -6,7 +6,6 @@ services:
   mysqldb:
     image: 'mysql@sha256:eb00f19a38312b85bfb7195eead2d07d35279f2a6a61b3dc994094dcefa57986'
     container_name: mysqldb
-    env_file: .env
     environment:
       - MYSQL_DATABASE=${MYSQL_DB_NAME}
       - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
@@ -31,9 +30,7 @@ services:
       mysqldb:
         condition: service_healthy
     ports:
-      - '${ACCESS_PORT}:8080'
-    env_file:
-    - .env
+      - '8080:8080'
     environment:
       - MYSQL_DB_HOST_NAME=mysqldb
       - MYSQL_DB_NAME=${MYSQL_DB_NAME}
@@ -58,7 +55,7 @@ services:
     networks:
       - appsnetwork
     ports:
-      - '3000:80'
+      - '${ACCESS_PORT}:80'
 
 
 networks:
