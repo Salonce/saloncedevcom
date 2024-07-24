@@ -4,7 +4,6 @@ import dev.salonce.todolist.entities.TodoTask;
 import dev.salonce.todolist.repositories.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +29,12 @@ public class TodoService {
     public void switchTaskState(Long id){
         TodoTask todoTask = todoRepository.getReferenceById(id);
         todoTask.setFinished(!todoTask.isFinished());
+        todoRepository.save(todoTask);
+    }
+
+    public void switchTaskDescription(Long id, String description){
+        TodoTask todoTask = todoRepository.getReferenceById(id);
+        todoTask.setDescription(description);
         todoRepository.save(todoTask);
     }
 }

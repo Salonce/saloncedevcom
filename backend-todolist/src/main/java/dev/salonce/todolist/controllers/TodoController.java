@@ -11,8 +11,8 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:80", "http://localhost:3000", "http://saloncedevcom-frontend:8080"}, allowCredentials = "true")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 @RequestMapping("/todo")
 public class TodoController {
 
@@ -37,8 +37,10 @@ public class TodoController {
 
     @PatchMapping("/task/{id}")
     public ResponseEntity<String> switchTaskState(@PathVariable Long id, @RequestBody TaskUpdateRequest taskUpdateRequest){
-        if (taskUpdateRequest.getStateSwitch() == true)
+        if (taskUpdateRequest.getStateSwitch() != null && taskUpdateRequest.getStateSwitch() == true)
             todoService.switchTaskState(id);
+        if (taskUpdateRequest.getDescription() != null)
+            todoService.switchTaskDescription(id, taskUpdateRequest.getDescription());
         return ResponseEntity.ok("Request processed successfully");
     }
 }

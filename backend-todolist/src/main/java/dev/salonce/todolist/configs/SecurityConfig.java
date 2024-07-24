@@ -17,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -25,10 +24,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ...
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        //.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
