@@ -4,58 +4,59 @@ name: saloncedevcomapp
 
 services:
   mysqldb:
-    image: 'mysql@sha256:eb00f19a38312b85bfb7195eead2d07d35279f2a6a61b3dc994094dcefa57986'
-    container_name: mysqldb
+    container_name: ${MYSQL_CONTAINER_NAME}
+    image: 'mysql@sha256:a13510e6c70e4be896cb904ba1fe3d4d466193928324744bb2356e865c097ebb'
     environment:
-      - MYSQL_DATABASE=${MYSQL_DB_NAME}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
-      - MYSQL_USER=${MYSQL_DB_USERNAME}
-      - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
-    networks:
-      - appsnetwork
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DB_PASSWORD}
+      MYSQL_USER: ${MYSQL_DB_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
     volumes:
       - saloncedevcomdata:/var/lib/mysql
     healthcheck:
           test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
           timeout: 5s
           retries: 30
+    networks:
+      - appsnetwork
 
   backend:
+    container_name: saloncedevcom-backend
+    environment:
+      MYSQL_HOSTNAME: ${MYSQL_CONTAINER_NAME}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DB_PASSWORD: ${MYSQL_DB_PASSWORD}
+      MYSQL_DB_USERNAME: ${MYSQL_DB_USERNAME}
     build:
       context: ./backend-todolist/
       dockerfile: dockerfile
     image: saloncedevcombackend:0
-    container_name: saloncedevcom-backend
     depends_on:
       mysqldb:
         condition: service_healthy
-    ports:
-      - '8080:8080'
-    environment:
-      - MYSQL_DB_HOST_NAME=mysqldb
-      - MYSQL_DB_NAME=${MYSQL_DB_NAME}
-      - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
-      - MYSQL_DB_USERNAME=${MYSQL_DB_USERNAME}
-    networks:
-      - appsnetwork
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/todo/task"]
       timeout: 5s
       retries: 30
+    ports:
+      - '8080:8080'
+    networks:
+      - appsnetwork
 
   frontend:
+    container_name: saloncedevcom-frontend
     build:
       context: ./frontend-react/
       dockerfile: dockerfile
     image: saloncedevcomfrontend:0
-    container_name: saloncedevcom-frontend
     depends_on:
       backend:
         condition: service_healthy
-    networks:
-      - appsnetwork
     ports:
       - '${ACCESS_PORT}:80'
+    networks:
+      - appsnetwork
+
 
 
 networks:
