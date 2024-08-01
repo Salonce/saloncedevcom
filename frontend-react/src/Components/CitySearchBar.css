@@ -1,0 +1,33 @@
+.input-group {
+    position: relative;
+}
+
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px; /* Ensure button and input appear as one unit */
+}
+
+.dropdown-menu {
+    width: 100%; /* Make dropdown width match the input field */
+    max-height: 300px; /* Optional: Limit the height of the dropdown */
+    overflow-y: auto; /* Optional: Add scroll if items exceed max-height */
+}
+
+.dropdown-item {
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa; /* Light background color on hover */
+}
+
+.dropdown-item:active {
+    background-color: #e9ecef; /* Slightly darker background on click */
+}

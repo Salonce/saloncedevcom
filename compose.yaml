@@ -1,66 +1,100 @@
-version: "3.9"
-
-name: saloncedevcomapp
+name: saloncedevcom
 
 services:
   mysqldb:
-    container_name: ${MYSQL_CONTAINER_NAME}
-    image: 'mysql@sha256:a13510e6c70e4be896cb904ba1fe3d4d466193928324744bb2356e865c097ebb'
+    image: 'mysql@sha256:7e8cceb7575924437a7b34a6ecaa726cf1067145f13b118e577d98526c0d9944'
+    container_name: ${SALDEVCOM_MYSQL_HOST_NAME}
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_DB_PASSWORD}
-      MYSQL_USER: ${MYSQL_DB_USERNAME}
-      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
+      MYSQL_DATABASE: ${SALDEVCOM_MYSQL_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${SALDEVCOM_MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${SALDEVCOM_MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${SALDEVCOM_MYSQL_PASSWORD}
+    networks:
+      - appsnetwork
     volumes:
       - saloncedevcomdata:/var/lib/mysql
     healthcheck:
-          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-          timeout: 5s
-          retries: 30
-    networks:
-      - appsnetwork
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 50
 
-  backend:
-    container_name: saloncedevcom-backend
-    environment:
-      MYSQL_HOSTNAME: ${MYSQL_CONTAINER_NAME}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_DB_PASSWORD: ${MYSQL_DB_PASSWORD}
-      MYSQL_DB_USERNAME: ${MYSQL_DB_USERNAME}
+  backend-todo:
     build:
       context: ./backend-todolist/
       dockerfile: dockerfile
-    image: saloncedevcombackend:0
+    image: backend-todo:0
+    container_name: backend-todo
     depends_on:
       mysqldb:
         condition: service_healthy
+    environment:
+      MYSQL_HOSTNAME: ${SALDEVCOM_MYSQL_HOST_NAME}
+      MYSQL_DB: ${SALDEVCOM_MYSQL_DB_NAME}
+      MYSQL_USERNAME: ${SALDEVCOM_MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${SALDEVCOM_MYSQL_PASSWORD}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/todo/task"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8080/actuator/health"
+        ]
+      interval: 10s
       timeout: 5s
-      retries: 30
+      retries: 15
     ports:
       - '8080:8080'
     networks:
       - appsnetwork
 
-  frontend:
-    container_name: saloncedevcom-frontend
+  backend-weather:
+    build:
+      context: ./backend-weather/
+      dockerfile: dockerfile
+    image: backend-weather:0
+    container_name: backend-weather
+    environment:
+      WEATHER_API_TOKEN: ${SALDEVCOM_WEATHER_API_TOKEN}
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8081/actuator/health"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    ports:
+      - '8081:8081'
+    networks:
+      - appsnetwork
+      
+  nginx-static:
     build:
       context: ./frontend-react/
       dockerfile: dockerfile
-    image: saloncedevcomfrontend:0
+    image: nginx-static:0
+    container_name: nginx-static
     depends_on:
-      backend:
+      backend-todo:
+        condition: service_healthy
+      backend-weather:
         condition: service_healthy
     ports:
-      - '${ACCESS_PORT}:80'
+      - '${SALDEVCOM_ACCESS_PORT}:80'
     networks:
       - appsnetwork
 
-
-
 networks:
   appsnetwork:
+
 
 volumes:
   saloncedevcomdata:

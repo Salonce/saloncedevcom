@@ -1,0 +1,22 @@
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 56px); 
+    background-color: #f0f8ff; 
+    color: #333;
+    font-family: Arial, sans-serif;
+  }
+  
+  .welcome-header {
+    text-align: center;
+  }
+  
+  .welcome-header h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+  }
+  
+  .welcome-header p {
+    font-size: 1.5em;
+  }

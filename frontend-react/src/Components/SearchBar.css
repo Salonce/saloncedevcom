@@ -1,0 +1,9 @@
+/* Custom CSS for SearchBar component */
+.form-control::placeholder {
+    color: #6c757d; /* Gray color for placeholder text */
+    opacity: 1; /* Ensure placeholder text is fully opaque */
+}
+.no-highlight:focus {
+    outline: none; /* Removes the default focus outline */
+    box-shadow: none; /* Removes any shadow around the element */
+  }

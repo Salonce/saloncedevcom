@@ -1,5 +1,4 @@
-// ChatView.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SockJS from "sockjs-client/dist/sockjs"
 
 interface Message {
@@ -7,7 +6,7 @@ interface Message {
   sender: string;
 }
 
-const ChatView: React.FC = () => {
+const ChatView = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);

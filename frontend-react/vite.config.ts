@@ -6,8 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/todo': {
+      '/todo/': {
         target: 'http://localhost:8080'},
+      '/weather/': {
+        target: 'http://localhost:8081'},
     },
   },
 })
